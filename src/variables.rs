@@ -55,16 +55,3 @@ impl AsRef<str> for Variables {
         }
     }
 }
-
-// impl FromStr for Variables {
-//     type Err = Error;
-
-//     fn from_str(s: &str) -> Result<Self, Self::Err> {
-
-//         Ok(match s {
-//             "magX" => Variables::MagnetometerX,
-//             "magY" => Variables::MagnetometerY,
-//             "magZ" => Variables::MagnetometerZ,
-//         })
-//     }
-// }
