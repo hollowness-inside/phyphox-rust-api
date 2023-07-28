@@ -2,13 +2,13 @@ use std::collections::HashMap;
 
 use crate::{
     error::Error,
-    sensors::Sensors,
+    variables::Variables,
 };
 
 /// Represents a connection to the Phyphox experiment server.
 pub struct Phyphox {
     url: String,
-    sensors: HashMap<Sensors, Option<f64>>,
+    variables: HashMap<Variables, Option<f64>>,
 }
 
 impl Phyphox {
@@ -16,29 +16,29 @@ impl Phyphox {
     pub fn new<S: std::fmt::Display>(addr: S) -> Self {
         Self {
             url: format!("http://{}", addr),
-            sensors: HashMap::new(),
+            variables: HashMap::new(),
         }
     }
 
-    /// Adds a sensor to the list of sensors to retrieve data for.
+    /// Adds a sensor's variable to the list to retrieve data for.
     ///
     /// # Arguments
     ///
-    /// * `sensor` - The sensor to add to the list.
+    /// * `variable` - The variable to add to the list.
     ///
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
-    /// phyphox.add_sensor(Sensors::AccelerationX);
-    /// phyphox.add_sensor(Sensors::AccelerationY);
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
+    /// phyphox.register_variable(Variables::AccelerationX);
+    /// phyphox.register_variable(Variables::AccelerationY);
     /// ```
     #[inline]
-    pub fn add_sensor(&mut self, sensor: Sensors) {
-        self.sensors.insert(sensor, None);
+    pub fn register_variable(&mut self, variable: Variables) {
+        self.variables.insert(variable, None);
     }
 
-    /// Retrieves data for all added sensors and updates their values.
+    /// Retrieves data for all added variables and updates their values.
     ///
     /// # Errors
     ///
@@ -47,38 +47,38 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
-    /// phyphox.add_sensor(Sensors::AccelerationX);
-    /// phyphox.add_sensor(Sensors::AccelerationY);
-    /// phyphox.start().unwrap();
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
+    /// phyphox.register_variable(Variables::AccelerationX);
+    /// phyphox.register_variable(Variables::AccelerationY);
+    /// phyphox.start()?;
     ///
     /// loop {
-    ///     phyphox.retrieve_data().unwrap();
-    ///     let x = phyphox.get(Sensors::AccelerationX).unwrap();
-    ///     let y = phyphox.get(Sensors::AccelerationY).unwrap();
+    ///     phyphox.retrieve_data()?;
+    ///     let x = phyphox.get(Variables::AccelerationX)?;
+    ///     let y = phyphox.get(Variables::AccelerationY)?;
     ///     println!("x = {}, y = {}", x, y);
     /// }
     /// ```
     ///
     /// # Note
     ///
-    /// The `retrieve_data` function updates the values of all added sensors. If a sensor has not
-    /// been added yet or it could not be retrieved, its value will be `None`.
+    /// The `retrieve_data` function updates the values of all added variables. If a variable has not
+    /// been added yet or its value could not be retrieved, its value will be `None`.
     pub fn retrieve_data(&mut self) -> Result<(), Error> {
-        let sensors: Vec<Sensors> = self.sensors.keys().map(|x| *x).collect();
+        let variables: Vec<Variables> = self.variables.keys().map(|x| *x).collect();
 
-        let sensor_names: Vec<&str> = sensors.iter().map(|s| s.as_ref()).collect();
-        let url = format!("{}/get?{}", self.url, sensor_names.join("&"));
+        let var_names: Vec<&str> = variables.iter().map(|s| s.as_ref()).collect();
+        let url = format!("{}/get?{}", self.url, var_names.join("&"));
         let response = reqwest::blocking::get(&url)?;
 
         let json = response.json::<serde_json::Value>()?;
         let json = json.get("buffer").ok_or(Error::BadResponse)?;
 
-        for sensor in sensors {
-            json.get(sensor.as_ref())
+        for var in variables {
+            json.get(var.as_ref())
                 .and_then(|v| v.get("buffer"))
                 .and_then(|v| v.get(0))
-                .and_then(|v| self.sensors.insert(sensor, v.as_f64()));
+                .and_then(|v| self.variables.insert(var, v.as_f64()));
         }
 
         Ok(())
@@ -99,15 +99,15 @@ impl Phyphox {
     ///
     /// ```
     /// let mut phyphox = Phyphox::new("192.168.1.100");
-    /// phyphox.add_sensor(Sensors::AccelerationX);
+    /// phyphox.register_variable(Variables::AccelerationX);
     /// phyphox.retrieve_data().unwrap();
     ///
-    /// let x = phyphox.get(Sensors::AccelerationX).unwrap();
+    /// let x = phyphox.get(Variables::AccelerationX).unwrap();
     /// println!("x = {}", x);
     /// ```
     #[inline]
-    pub fn get(&self, sensor: Sensors) -> Option<f64> {
-        self.sensors.get(&sensor).and_then(|v| *v)
+    pub fn get(&self, sensor: Variables) -> Option<f64> {
+        self.variables.get(&sensor).and_then(|v| *v)
     }
 
     /// The `control` function sends a command directly to the Phyphox experiment server.
@@ -198,20 +198,20 @@ impl Phyphox {
         self.control("clear")
     }
 
-    /// Removes all the sensors from the list of sensors to retrieve data for.
+    /// Removes all the variables from the list to retrieve data for.
     ///
     /// # Examples
     ///
     /// ```
     /// let mut phyphox = Phyphox::new("192.168.1.100");
-    /// phyphox.reset_sensors().unwrap();
+    /// phyphox.clear_variables().unwrap();
     /// ```
     ///
     /// # Errors
     ///
     /// Returns an error if the HTTP request fails.
     #[inline]
-    pub fn reset_sensors(&mut self) {
-        self.sensors.clear();
+    pub fn clear_variables(&mut self) {
+        self.variables.clear();
     }
 }

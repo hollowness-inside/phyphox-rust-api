@@ -1,9 +1,9 @@
 pub mod error;
 pub mod phyphox;
-pub mod sensors;
+pub mod variables;
 
 pub use crate::{
     error::Error,
     phyphox::Phyphox,
-    sensors::Sensors,
+    variables::Variables,
 };
