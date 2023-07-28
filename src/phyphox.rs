@@ -54,7 +54,7 @@ impl Phyphox {
     ///
     /// loop {
     ///     phyphox.retrieve()?;
-    /// 
+    ///
     ///     let x = phyphox.get(Variables::AccelerationX)?;
     ///     let y = phyphox.get(Variables::AccelerationY)?;
     ///     println!("x = {}, y = {}", x, y);
