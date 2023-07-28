@@ -5,7 +5,7 @@ use phyphox_api::{
 };
 
 fn main() -> Result<(), Error> {
-    let mut phy = Phyphox::new("10.23.21.97:8080");
+    let mut phy = Phyphox::new("127.0.0.1:8080");
 
     phy.add_sensor(Sensors::MagnetometerX);
     phy.add_sensor(Sensors::Light);
