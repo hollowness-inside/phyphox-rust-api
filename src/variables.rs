@@ -1,3 +1,7 @@
+use std::str::FromStr;
+
+use crate::Error;
+
 /// Represents a sensor's variable whose data to be retrieved from the experiment.
 ///
 /// # Examples
@@ -10,16 +14,19 @@ pub enum Variables {
     MagnetometerX,
     MagnetometerY,
     MagnetometerZ,
+    MagnetometerAbs,
     MagnetometerTime,
 
     GyroscopeX,
     GyroscopeY,
     GyroscopeZ,
+    GyroscopeAbs,
     GyroscopeTime,
 
     AccelerationX,
     AccelerationY,
     AccelerationZ,
+    AccelerationAbs,
     AccelerationTime,
 
     Light,
@@ -32,16 +39,19 @@ impl AsRef<str> for Variables {
             Variables::MagnetometerX => "magX",
             Variables::MagnetometerY => "magY",
             Variables::MagnetometerZ => "magZ",
+            Variables::MagnetometerAbs => "mag_abs",
             Variables::MagnetometerTime => "mag_time",
 
             Variables::GyroscopeX => "gyrX",
             Variables::GyroscopeY => "gyrY",
             Variables::GyroscopeZ => "gyrZ",
+            Variables::GyroscopeAbs => "gyr_abs",
             Variables::GyroscopeTime => "gyr_time",
 
             Variables::AccelerationX => "accX",
             Variables::AccelerationY => "accY",
             Variables::AccelerationZ => "accZ",
+            Variables::AccelerationAbs => "acc_abs",
             Variables::AccelerationTime => "acc_time",
 
             Variables::Light => "light",
@@ -49,3 +59,16 @@ impl AsRef<str> for Variables {
         }
     }
 }
+
+// impl FromStr for Variables {
+//     type Err = Error;
+
+//     fn from_str(s: &str) -> Result<Self, Self::Err> {
+
+//         Ok(match s {
+//             "magX" => Variables::MagnetometerX,
+//             "magY" => Variables::MagnetometerY,
+//             "magZ" => Variables::MagnetometerZ,
+//         })
+//     }
+// }
