@@ -30,11 +30,11 @@ impl Phyphox {
     ///
     /// ```
     /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
-    /// phyphox.register_variable(Variables::AccelerationX);
-    /// phyphox.register_variable(Variables::AccelerationY);
+    /// phyphox.register(Variables::AccelerationX);
+    /// phyphox.register(Variables::AccelerationY);
     /// ```
     #[inline]
-    pub fn register_variable(&mut self, variable: Variables) {
+    pub fn register(&mut self, variable: Variables) {
         self.variables.insert(variable, None);
     }
 
@@ -48,12 +48,13 @@ impl Phyphox {
     ///
     /// ```
     /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
-    /// phyphox.register_variable(Variables::AccelerationX);
-    /// phyphox.register_variable(Variables::AccelerationY);
+    /// phyphox.register(Variables::AccelerationX);
+    /// phyphox.register(Variables::AccelerationY);
     /// phyphox.start()?;
     ///
     /// loop {
-    ///     phyphox.retrieve_data()?;
+    ///     phyphox.retrieve()?;
+    /// 
     ///     let x = phyphox.get(Variables::AccelerationX)?;
     ///     let y = phyphox.get(Variables::AccelerationY)?;
     ///     println!("x = {}, y = {}", x, y);
@@ -62,9 +63,9 @@ impl Phyphox {
     ///
     /// # Note
     ///
-    /// The `retrieve_data` function updates the values of all added variables. If a variable has not
+    /// The `retrieve` function updates the values of all added variables. If a variable has not
     /// been added yet or its value could not be retrieved, its value will be `None`.
-    pub fn retrieve_data(&mut self) -> Result<(), Error> {
+    pub fn retrieve(&mut self) -> Result<(), Error> {
         let variables: Vec<Variables> = self.variables.keys().map(|x| *x).collect();
 
         let var_names: Vec<&str> = variables.iter().map(|s| s.as_ref()).collect();
@@ -98,9 +99,9 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
-    /// phyphox.register_variable(Variables::AccelerationX);
-    /// phyphox.retrieve_data().unwrap();
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
+    /// phyphox.register(Variables::AccelerationX);
+    /// phyphox.retrieve().unwrap();
     ///
     /// let x = phyphox.get(Variables::AccelerationX).unwrap();
     /// println!("x = {}", x);
@@ -119,7 +120,7 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
     /// phyphox.control("start").unwrap();
     /// ```
     ///
@@ -137,7 +138,7 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
     /// phyphox.start().unwrap();
     /// // Retrieve some measurements...
     /// phyphox.stop().unwrap();
@@ -160,7 +161,7 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
     /// phyphox.start().unwrap();
     /// ```
     ///
@@ -181,7 +182,7 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
     /// phyphox.clear().unwrap();
     /// ```
     ///
@@ -203,7 +204,7 @@ impl Phyphox {
     /// # Examples
     ///
     /// ```
-    /// let mut phyphox = Phyphox::new("192.168.1.100");
+    /// let mut phyphox = Phyphox::new("127.0.0.1:8080");
     /// phyphox.clear_variables().unwrap();
     /// ```
     ///

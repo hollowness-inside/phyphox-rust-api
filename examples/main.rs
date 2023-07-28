@@ -1,20 +1,20 @@
 use phyphox_api::{
     Error,
     Phyphox,
-    Sensors,
+    Variables,
 };
 
 fn main() -> Result<(), Error> {
     let mut phy = Phyphox::new("127.0.0.1:8080");
 
-    phy.add_sensor(Sensors::MagnetometerX);
-    phy.add_sensor(Sensors::Light);
+    phy.register(Variables::MagnetometerX);
+    phy.register(Variables::Light);
 
     loop {
-        phy.retrieve_data()?;
+        phy.retrieve()?;
 
-        let m = phy.get(Sensors::MagnetometerX).expect("cannot retrieve magX");
-        let l = phy.get(Sensors::Light).expect("cannot retrieve light");
+        let m = phy.get(Variables::MagnetometerX).unwrap();
+        let l = phy.get(Variables::Light).unwrap();
 
         println!("{} {}", m, l);
     }
