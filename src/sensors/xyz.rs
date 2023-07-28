@@ -10,6 +10,9 @@ use crate::{
 
 macro_rules! register {
     ($fn_name:ident, $var:ident) => {
+        #[doc = "Registers the "]
+        #[doc = stringify!($var)]
+        #[doc = " variable to be read"]
         pub fn $fn_name(&self) {
             self.1.borrow_mut().register(self.0.$var())
         }
@@ -18,6 +21,9 @@ macro_rules! register {
 
 macro_rules! getter {
     ($var:ident) => {
+        #[doc = "Reads the "]
+        #[doc = stringify!($var)]
+        #[doc = " variable from the sensor"]
         pub fn $var(&self) -> Option<f64> {
             self.1.borrow().get(self.0.$var())
         }
@@ -31,6 +37,7 @@ pub enum XYZSensorName {
 }
 
 impl XYZSensorName {
+    /// Returns the `Variable` representing the X value of this sensor
     pub fn x(&self) -> Variables {
         match self {
             XYZSensorName::Magnetometer => Variables::MagnetometerX,
@@ -39,6 +46,7 @@ impl XYZSensorName {
         }
     }
 
+    /// Returns the `Variable` representing the Y value of this sensor
     pub fn y(&self) -> Variables {
         match self {
             XYZSensorName::Magnetometer => Variables::MagnetometerY,
@@ -47,6 +55,7 @@ impl XYZSensorName {
         }
     }
 
+    /// Returns the `Variable` representing the Z value of this sensor
     pub fn z(&self) -> Variables {
         match self {
             XYZSensorName::Magnetometer => Variables::MagnetometerZ,
@@ -55,6 +64,7 @@ impl XYZSensorName {
         }
     }
 
+    /// Returns the `Variable` representing the Abs value of this sensor
     pub fn abs(&self) -> Variables {
         match self {
             XYZSensorName::Magnetometer => Variables::MagnetometerAbs,
@@ -63,6 +73,7 @@ impl XYZSensorName {
         }
     }
 
+    /// Returns the `Variable` representing the Time value of this sensor
     pub fn time(&self) -> Variables {
         match self {
             XYZSensorName::Magnetometer => Variables::MagnetometerTime,
@@ -72,6 +83,7 @@ impl XYZSensorName {
     }
 }
 
+/// Represents an XYZ sensor
 pub struct XYZSensor(
     pub(crate) XYZSensorName,
     pub(crate) Rc<RefCell<PhyphoxClient>>,
