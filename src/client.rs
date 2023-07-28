@@ -22,10 +22,6 @@ impl PhyphoxClient {
 
     /// Adds a sensor's variable to the list to retrieve data for.
     ///
-    /// # Arguments
-    ///
-    /// * `variable` - The variable to add to the list.
-    ///
     /// # Examples
     ///
     /// ```
@@ -42,7 +38,9 @@ impl PhyphoxClient {
     ///
     /// # Errors
     ///
-    /// Returns an error if the HTTP request fails.
+    /// Returns `Error::BadResponse` if the response is in the wrong format.
+    /// 
+    /// Returns `Error::ReqwestError` if the HTTP request fails.
     ///
     /// # Examples
     ///
@@ -85,37 +83,29 @@ impl PhyphoxClient {
         Ok(())
     }
 
-    /// Returns the value of a sensor.
-    ///
-    /// # Arguments
-    ///
-    /// * `sensor` - The sensor to get the value of.
+    /// Returns the value of a variable.
     ///
     /// # Returns
     ///
-    /// Returns the value of the sensor as a `Option<f64>`. If the sensor has not been added
+    /// Returns the value of the variable as a `Option<f64>`. If the sensor has not been added
     /// or if its value could not be retrieved, the function will return `None`.
     ///
     /// # Examples
     ///
     /// ```
     /// let mut phyphox = PhyphoxClient::new("127.0.0.1:8080");
-    /// phyphox.register(Variables::AccelerationX);
+    /// phyphox.register(Variables::Light);
     /// phyphox.retrieve()?;
     ///
-    /// let x = phyphox.get(Variables::AccelerationX)?;
-    /// println!("x = {}", x);
+    /// let light = phyphox.get(Variables::Light)?;
+    /// println!("{}", light);
     /// ```
     #[inline]
-    pub fn get(&self, sensor: Variables) -> Option<f64> {
-        self.variables.get(&sensor).and_then(|v| *v)
+    pub fn get(&self, var: Variables) -> Option<f64> {
+        self.variables.get(&var).and_then(|v| *v)
     }
 
     /// The `control` function sends a command directly to the Phyphox experiment server.
-    ///
-    /// # Arguments
-    ///
-    /// * `command` - The command to send.
     ///
     /// # Examples
     ///
@@ -127,22 +117,13 @@ impl PhyphoxClient {
     /// # Errors
     ///
     /// Returns an error if the HTTP request fails.
-    pub fn control(&self, command: &str) -> Result<(), Error> {
-        let url = format!("{}/control?cmd={}", self.url, command);
+    pub fn control(&self, cmd: &str) -> Result<(), Error> {
+        let url = format!("{}/control?cmd={}", self.url, cmd);
         let _ = reqwest::blocking::get(&url)?;
         Ok(())
     }
 
     /// Stops the experiment.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut phyphox = PhyphoxClient::new("127.0.0.1:8080");
-    /// phyphox.start()?;
-    /// // Retrieve some measurements...
-    /// phyphox.stop()?;
-    /// ```
     ///
     /// # Errors
     ///
@@ -158,13 +139,6 @@ impl PhyphoxClient {
 
     /// Starts the experiment.
     ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut phyphox = PhyphoxClient::new("127.0.0.1:8080");
-    /// phyphox.start()?;
-    /// ```
-    ///
     /// # Errors
     ///
     /// Returns an error if the HTTP request fails.
@@ -178,13 +152,6 @@ impl PhyphoxClient {
     }
 
     /// Clears the experiment (and stops the experiment if running).
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut phyphox = PhyphoxClient::new("127.0.0.1:8080");
-    /// phyphox.clear()?;
-    /// ```
     ///
     /// # Errors
     ///
@@ -200,13 +167,6 @@ impl PhyphoxClient {
     }
 
     /// Removes all the variables from the list to retrieve data for.
-    ///
-    /// # Examples
-    ///
-    /// ```
-    /// let mut phyphox = PhyphoxClient::new("127.0.0.1:8080");
-    /// phyphox.clear_variables()?;
-    /// ```
     ///
     /// # Errors
     ///

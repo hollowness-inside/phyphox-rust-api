@@ -1,10 +1,4 @@
-/// Represents a sensor's variable whose data to be retrieved from the experiment.
-///
-/// # Examples
-///
-/// ```
-/// let sensor = Sensors::AccelerationX;
-/// ```
+/// Represents a sensor's variable whose data is to be retrieved from the experiment.
 #[derive(Copy, Clone, Debug, Eq, Hash, PartialEq)]
 pub enum Variables {
     MagnetometerX,

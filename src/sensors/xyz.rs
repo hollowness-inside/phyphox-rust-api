@@ -10,9 +10,9 @@ use crate::{
 
 macro_rules! register {
     ($fn_name:ident, $var:ident) => {
-        #[doc = "Registers the "]
+        #[doc = "Registers the `"]
         #[doc = stringify!($var)]
-        #[doc = " variable to be read"]
+        #[doc = "` variable to be read"]
         pub fn $fn_name(&self) {
             self.1.borrow_mut().register(self.0.$var())
         }
@@ -21,9 +21,9 @@ macro_rules! register {
 
 macro_rules! getter {
     ($var:ident) => {
-        #[doc = "Reads the "]
+        #[doc = "Reads the `"]
         #[doc = stringify!($var)]
-        #[doc = " variable from the sensor"]
+        #[doc = "` variable from the sensor"]
         pub fn $var(&self) -> Option<f64> {
             self.1.borrow().get(self.0.$var())
         }

@@ -35,12 +35,12 @@ pub struct SVSensor(
 );
 
 impl SVSensor {
-    /// Registers the `value` variable to be read 
+    /// Registers the `value` variable to be read
     pub fn register(&self) {
         self.1.borrow_mut().register(self.0.value())
     }
 
-    /// Registers the `time` variable to be read 
+    /// Registers the `time` variable to be read
     pub fn register_time(&self) {
         self.1.borrow_mut().register(self.0.time())
     }
