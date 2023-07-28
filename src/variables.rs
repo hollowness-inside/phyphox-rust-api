@@ -1,7 +1,3 @@
-use std::str::FromStr;
-
-use crate::Error;
-
 /// Represents a sensor's variable whose data to be retrieved from the experiment.
 ///
 /// # Examples
